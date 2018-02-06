@@ -41,7 +41,7 @@ public class Spicy {
 	}
 	
 	public boolean isEaten(SnekUnit unit) {
-		if(boundingBox.contains(unit.getBound()))
+		if(boundingBox.intersects(unit.getBound()))
 			return true;
 		else
 			return false;
