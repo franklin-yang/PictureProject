@@ -19,13 +19,13 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private int dx, dy;
 	private int startingSpicySize = 15;
 	private Spicy spicy;
-
+	private Button randomDirection;
+	private int btnSize = 30;
 
 	//movement
 	private boolean up, down, right, left;
 
 	//warning
-	private boolean testing = true;
 	private boolean acknowledgeDisc = false;
 	private Rectangle disclaimerBtn;
 	private int minDim;
@@ -39,15 +39,18 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private boolean start = false;
 	private boolean fab = false;
 
-	//milliseconds between each time the snek moves
+	//milliseconds between each movement/screen refresh
 	private int updateDelay = 30;
+	
+	//testing
+	private boolean testing = false;
 
 	DemoSnek(int w, int h){
 		super(new SimplePicture(w,h,Color.black));
 		playAreaHeight = h;
 		playAreaWidth = w;
 		minDim = Math.min(playAreaWidth, playAreaHeight);
-		playArea = new SimplePicture(w,h,Color.BLUE);
+		playArea = new SimplePicture(w,h);
 		g2dView = playArea.createGraphics();
 		snake = new ArrayList<SnekUnit>();
 		head = new SnekUnit(size);
@@ -58,8 +61,9 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			e.setPosition(head.getX() + (i * size), head.getY());
 			snake.add(e);
 		}
-		showWarning();
 		spicy = new Spicy(startingSpicySize);
+		randomDirection = new Button(btnSize);
+		showWarning();
 
 	}
 
@@ -97,6 +101,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	}
 
 	public void letsGo() {
+//		randomDirection.setRandomLoc(playAreaWidth, playAreaHeight);
 		Random positionPicker = new Random();
 		spicy.setPosition(positionPicker.nextInt(playAreaWidth-spicy.getSize()),positionPicker.nextInt(playAreaHeight-spicy.getSize()));
 		while(true) {
@@ -106,6 +111,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			}
 			render(g2dView);
 			update();
+			randomDirection.render(g2dView);
 			setImage(playArea);
 			try {
 				Thread.sleep(updateDelay);
@@ -169,15 +175,14 @@ public class DemoSnek extends FlexiblePictureExplorer{
 						System.out.println(e);
 					}
 				}
-				//				
 			}	
-
 		}
 
 		class BoardThread extends Thread{
+			
 			BoardThread(){
-
 			}
+			
 			public void run() {
 				try{
 					Thread.sleep(3000);
@@ -185,6 +190,10 @@ public class DemoSnek extends FlexiblePictureExplorer{
 				} catch(Exception e){
 					System.out.println(e);
 				}
+				randomDirection.setRandomLoc(playAreaWidth, playAreaHeight);
+//				randomDirection.setPosition(250, 250);
+				dy = 0;
+				right = true;
 				letsGo();
 			}
 		}
@@ -206,28 +215,33 @@ public class DemoSnek extends FlexiblePictureExplorer{
 				e.render(g2d);
 			}
 		}
-		spicy.render(g2dView);
-
+		spicy.render(g2d);
+		randomDirection.render(g2d);
 	}
 
 	private void update() {
-		// TODO Auto-generated method stub
 		if(up && dy == 0){
 			dy = -size;
 			dx = 0;
 		}
+		
 		if(down && dy == 0){
 			dy = size;
 			dx = 0;
 		}
+		
 		if(left && dx == 0){
 			dy = 0;
 			dx = -size;
 		}
+		
 		if(right && dx == 0){
 			dy = 0;
 			dx = size;
 		}
+		
+		
+		
 		up = false;
 		down = false;
 		left = false;
@@ -255,10 +269,9 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			if(disclaimerBtn.contains(pix.getX(),pix.getY())) {
 				acknowledgeDisc = true;
 				setUpSplash(playAreaWidth,playAreaHeight);
-
 			}
 		}
-
+		randomDirection.render(g2dView);
 		if(testing) {
 			int dx = head.getX()-pix.getX();
 			int dy = head.getY()-pix.getY();
@@ -277,12 +290,22 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			else
 				head.move(0, size);
 		}
+		
+		if(randomDirection.isClicked(pix)) {
+			randomDirection.setRandomLoc(playAreaWidth, playAreaHeight);
+			Random pickDirection = new Random();
+			int rand = pickDirection.nextInt(4);
+			System.out.println(rand);
+			if(rand==0)
+				up = true;
+			if(rand==1)
+				down = true;
+			if(rand==2)
+				left = true;
+			if(rand==3)
+				right = true;
 
-		//		boolean xCheck = (pix.getX()-btnLoc[0])>0 && (pix.getX()-btnLoc[0])<btnSize;
-		//		boolean yCheck = (pix.getY()-btnLoc[1])>0 && (pix.getY()-btnLoc[1])<btnSize;
-		//		if(xCheck && yCheck) {
-		//			redrawMovedBtn();
-		//			randomDirection();
+		}
 	}
 
 	public boolean imageUpdate(Image arg0, int arg1, int arg2, int arg3,int arg4, int arg5) {
