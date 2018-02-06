@@ -37,7 +37,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private Font fSplash;
 	
 	private boolean start = false;
-	private boolean fab = false;
+	private boolean fab = true;
 	
 	
 	DemoSnek(int w, int h){
@@ -246,6 +246,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		if(head.getY() > playAreaHeight)
 			head.setY(0);
 	}
+	
 	public void mouseClickedAction(DigitalPicture pict, Pixel pix){
 		if(!acknowledgeDisc) {
 			if(disclaimerBtn.contains(pix.getX(),pix.getY())) {
