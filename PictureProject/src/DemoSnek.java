@@ -6,29 +6,39 @@ import java.io.File;
 import java.util.Random;
 
 public class DemoSnek extends FlexiblePictureExplorer{
+	//ui
 	private SimplePicture playArea;
+	private int playAreaHeight, playAreaWidth;
+	private Graphics2D g2dView;
+	
+	//objects on board
 	private ArrayList<SnekUnit> snake;
 	private SnekUnit head;
 	private int size = 10;
+	private int length = 5;
 	private int dx, dy;
-	private Graphics2D g2dView;
+	private int startingSpicySize = 10;
+	private Spicy spicy;
+
+	
+	//movement
 	private boolean up, down, right, left;
-	private int playAreaHeight, playAreaWidth;
-	private int startingLength = 5;
+	
+	//warning
 	private boolean testing = true;
 	private boolean acknowledgeDisc = false;
 	private Rectangle disclaimerBtn;
-	private Graphics2D splash;
 	private int minDim;
 	private double wiggleMin;
-	private FontMetrics splashMet;
+	
+	//splash
 	private SimplePicture splashImg;
 	private Graphics2D gSplash;
 	private Font fSplash;
+	
 	private boolean start = false;
 	private boolean fab = false;
-	private int startingSpicySize = 30;
-	private Spicy spicy;
+	
 	
 	DemoSnek(int w, int h){
 		super(new SimplePicture(w,h,Color.black));
@@ -41,7 +51,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		head = new SnekUnit(size);
 		head.setPosition(playAreaWidth / 2, playAreaHeight / 2);
 		snake.add(head);
-		for(int i = 1; i < startingLength; i++){
+		for(int i = 1; i < length; i++){
 			SnekUnit e = new SnekUnit(size);
 			e.setPosition(head.getX() + (i * size), head.getY());
 			snake.add(e);
@@ -279,6 +289,6 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	
 	
 	public static void main(String[] args){
-		DemoSnek test = new DemoSnek(1200,1000);
+		DemoSnek test = new DemoSnek(800,400);
 	}
 }
