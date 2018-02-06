@@ -10,36 +10,38 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private SimplePicture playArea;
 	private int playAreaHeight, playAreaWidth;
 	private Graphics2D g2dView;
-	
+
 	//objects on board
 	private ArrayList<SnekUnit> snake;
 	private SnekUnit head;
 	private int size = 10;
 	private int length = 5;
 	private int dx, dy;
-	private int startingSpicySize = 10;
+	private int startingSpicySize = 15;
 	private Spicy spicy;
 
-	
+
 	//movement
 	private boolean up, down, right, left;
-	
+
 	//warning
 	private boolean testing = true;
 	private boolean acknowledgeDisc = false;
 	private Rectangle disclaimerBtn;
 	private int minDim;
 	private double wiggleMin;
-	
+
 	//splash
 	private SimplePicture splashImg;
 	private Graphics2D gSplash;
 	private Font fSplash;
-	
+
 	private boolean start = false;
-	private boolean fab = true;
-	
-	
+	private boolean fab = false;
+
+	//milliseconds between each time the snek moves
+	private int updateDelay = 30;
+
 	DemoSnek(int w, int h){
 		super(new SimplePicture(w,h,Color.black));
 		playAreaHeight = h;
@@ -58,9 +60,9 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		}
 		showWarning();
 		spicy = new Spicy(startingSpicySize);
-		
+
 	}
-	
+
 	private void showWarning() {
 		acknowledgeDisc = false;
 		int btnWidth = (int)(playAreaWidth*.3);
@@ -70,7 +72,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		Graphics2D warnG = warning.createGraphics();
 		warnG.setColor(Color.WHITE);
 		warnG.draw(disclaimerBtn);
-		
+
 		try{
 			Font roboto = Font.createFont(Font.TRUETYPE_FONT, new File("fonts/Roboto-Regular.ttf"));
 			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -78,7 +80,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		}catch(Exception e) {
 			System.out.println(e);
 		}
-		
+
 		Font warnFont = new Font("Roboto-Regular",Font.PLAIN,25);
 		FontMetrics metrics = warnG.getFontMetrics(warnFont);
 		int warnWidth = metrics.stringWidth("I understand");
@@ -91,33 +93,34 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		warnG.setFont(warnFont);
 		warnG.drawString("I understand.", (playAreaWidth/2-warnWidth/2), (int)(playAreaHeight/2.2+btnHeight/2)+(warnHeight/2));
 		setImage(warning);
-		
+
 	}
-	
+
 	public void letsGo() {
-			while(true) {
-				if(spicy.isEaten(head)) {
-					Random positionPicker = new Random();
-					spicy.setPosition(positionPicker.nextInt(playAreaWidth-spicy.getSize()),positionPicker.nextInt(playAreaHeight-spicy.getSize()));
-					snake.add(new SnekUnit(size));
-				}
-				render(g2dView);
-				update();
-				setImage(playArea);
-				try {
-					Thread.sleep(0);
-				} catch(Exception e){
-					System.out.println(e);
-				}
-				playArea.setAllPixelsToAColor(Color.BLACK);
+		Random positionPicker = new Random();
+		spicy.setPosition(positionPicker.nextInt(playAreaWidth-spicy.getSize()),positionPicker.nextInt(playAreaHeight-spicy.getSize()));
+		while(true) {
+			if(spicy.isEaten(head)) {
+				spicy.setPosition(positionPicker.nextInt(playAreaWidth-spicy.getSize()),positionPicker.nextInt(playAreaHeight-spicy.getSize()));
+				snake.add(new SnekUnit(size));
 			}
+			render(g2dView);
+			update();
+			setImage(playArea);
+			try {
+				Thread.sleep(updateDelay);
+			} catch(Exception e){
+				System.out.println(e);
+			}
+			playArea.setAllPixelsToAColor(Color.BLACK);
+		}
 	}
-	
+
 	private void setUpSplash(int width, int height) {
 		class SplashThread extends Thread {
 			private int w;
 			private int h;
-			
+
 			SplashThread(int width, int height){
 				splashImg = new SimplePicture(width,height,Color.BLACK);
 				gSplash = splashImg.createGraphics();
@@ -138,7 +141,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 					int sWidth = metrics.stringWidth("s");
 					int nWidth = metrics.stringWidth("n");
 					int eWidth = metrics.stringWidth("e");
-//					int kWidth = metrics.stringWidth("k");
+					//					int kWidth = metrics.stringWidth("k");
 					Random wiggleSet = new Random();
 					wiggleMin = minDim/30;
 					int sPos = (int)(w/30 - wiggleMin + wiggleSet.nextDouble()*(2*wiggleMin));
@@ -166,9 +169,9 @@ public class DemoSnek extends FlexiblePictureExplorer{
 						System.out.println(e);
 					}
 				}
-//				
+				//				
 			}	
-			
+
 		}
 
 		class BoardThread extends Thread{
@@ -185,7 +188,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 				letsGo();
 			}
 		}
-		
+
 		SplashThread splashIt = new SplashThread(width,height);
 		splashIt.start();
 		BoardThread loadBoard = new BoardThread();
@@ -206,7 +209,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		spicy.render(g2dView);
 
 	}
-	
+
 	private void update() {
 		// TODO Auto-generated method stub
 		if(up && dy == 0){
@@ -236,7 +239,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			head.move(dx, dy);
 		}
 
-		
+
 		if(head.getX() < 0)
 			head.setX(playAreaWidth);
 		if(head.getY() < 0)
@@ -246,7 +249,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		if(head.getY() > playAreaHeight)
 			head.setY(0);
 	}
-	
+
 	public void mouseClickedAction(DigitalPicture pict, Pixel pix){
 		if(!acknowledgeDisc) {
 			if(disclaimerBtn.contains(pix.getX(),pix.getY())) {
@@ -255,7 +258,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 
 			}
 		}
-		
+
 		if(testing) {
 			int dx = head.getX()-pix.getX();
 			int dy = head.getY()-pix.getY();
@@ -274,21 +277,21 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			else
 				head.move(0, size);
 		}
-		
-//		boolean xCheck = (pix.getX()-btnLoc[0])>0 && (pix.getX()-btnLoc[0])<btnSize;
-//		boolean yCheck = (pix.getY()-btnLoc[1])>0 && (pix.getY()-btnLoc[1])<btnSize;
-//		if(xCheck && yCheck) {
-//			redrawMovedBtn();
-//			randomDirection();
-		}
-	
+
+		//		boolean xCheck = (pix.getX()-btnLoc[0])>0 && (pix.getX()-btnLoc[0])<btnSize;
+		//		boolean yCheck = (pix.getY()-btnLoc[1])>0 && (pix.getY()-btnLoc[1])<btnSize;
+		//		if(xCheck && yCheck) {
+		//			redrawMovedBtn();
+		//			randomDirection();
+	}
+
 	public boolean imageUpdate(Image arg0, int arg1, int arg2, int arg3,int arg4, int arg5) {
 		//method from implementing ImageObserver (the input is not needed)
 		return false;
 	}
-	
-	
-	
+
+
+
 	public static void main(String[] args){
 		DemoSnek test = new DemoSnek(800,400);
 	}
