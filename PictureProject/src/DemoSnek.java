@@ -36,8 +36,10 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private Graphics2D gSplash;
 	private Font fSplash;
 
+	//game options
 	private boolean start = false;
 	private boolean fab = false;
+	private boolean end = false;
 
 	//milliseconds between each time the snek moves
 	private int updateDelay = 30;
@@ -168,8 +170,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 					} catch(Exception e){
 						System.out.println(e);
 					}
-				}
-				//				
+				}		
 			}	
 
 		}
@@ -207,11 +208,15 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			}
 		}
 		spicy.render(g2dView);
-
+		if(end){
+			g2d.setColor(Color.white);
+			g2d.fillRect(0, 0, playAreaWidth, playAreaHeight);
+			g2d.setColor(Color.red);
+			g2d.drawString("You bLoGaL!", playAreaWidth / 2, playAreaHeight / 2);
+		}
 	}
 
 	private void update() {
-		// TODO Auto-generated method stub
 		if(up && dy == 0){
 			dy = -size;
 			dx = 0;
@@ -234,12 +239,17 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		right = false;
 		if(dx != 0 || dy != 0){
 			for(int i = snake.size() - 1; i > 0; i--){
-				snake.get(i).setPosition(snake.get(i - 1).getX(), snake.get(i - 1).getY());
+				(snake.get(i)).setPosition(snake.get(i - 1).getX(), snake.get(i - 1).getY());
 			}
 			head.move(dx, dy);
 		}
-
-
+		for(SnekUnit s : snake){
+			if(s.hitObj(head)){
+				end = true;
+				break;
+			}
+		}
+		
 		if(head.getX() < 0)
 			head.setX(playAreaWidth);
 		if(head.getY() < 0)
