@@ -25,7 +25,6 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private boolean up, down, right, left;
 
 	//warning
-	private boolean testing = true;
 	private boolean acknowledgeDisc = false;
 	private Rectangle disclaimerBtn;
 	private int minDim;
@@ -37,6 +36,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private Font fSplash;
 
 	//game options
+	private boolean testing = true;
 	private boolean start = false;
 	private boolean fab = false;
 	private boolean end = false;
@@ -284,8 +284,6 @@ public class DemoSnek extends FlexiblePictureExplorer{
 				else
 					right = true;
 			}
-			else
-				head.move(0, size);
 		}
 
 		//		boolean xCheck = (pix.getX()-btnLoc[0])>0 && (pix.getX()-btnLoc[0])<btnSize;
