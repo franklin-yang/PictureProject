@@ -36,14 +36,15 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private Graphics2D gSplash;
 	private Font fSplash;
 
+	//game options
+	private boolean testing = true;
 	private boolean start = false;
 	private boolean fab = false;
+	private boolean end = false;
 
 	//milliseconds between each movement/screen refresh
-	private int updateDelay = 30;
+	private int updateDelay = 3;
 	
-	//testing
-	private boolean testing = false;
 
 	DemoSnek(int w, int h){
 		super(new SimplePicture(w,h,Color.black));
@@ -104,6 +105,8 @@ public class DemoSnek extends FlexiblePictureExplorer{
 //		randomDirection.setRandomLoc(playAreaWidth, playAreaHeight);
 		Random positionPicker = new Random();
 		spicy.setPosition(positionPicker.nextInt(playAreaWidth-spicy.getSize()),positionPicker.nextInt(playAreaHeight-spicy.getSize()));
+//		dy = 0;
+//		right = true;
 		while(true) {
 			if(spicy.isEaten(head)) {
 				spicy.setPosition(positionPicker.nextInt(playAreaWidth-spicy.getSize()),positionPicker.nextInt(playAreaHeight-spicy.getSize()));
@@ -174,7 +177,8 @@ public class DemoSnek extends FlexiblePictureExplorer{
 					} catch(Exception e){
 						System.out.println(e);
 					}
-				}
+
+				}		
 			}	
 		}
 
@@ -191,9 +195,6 @@ public class DemoSnek extends FlexiblePictureExplorer{
 					System.out.println(e);
 				}
 				randomDirection.setRandomLoc(playAreaWidth, playAreaHeight);
-//				randomDirection.setPosition(250, 250);
-				dy = 0;
-				right = true;
 				letsGo();
 			}
 		}
@@ -217,6 +218,12 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		}
 		spicy.render(g2d);
 		randomDirection.render(g2d);
+		if(end){
+			g2d.setColor(Color.white);
+			g2d.fillRect(0, 0, playAreaWidth, playAreaHeight);
+			g2d.setColor(Color.red);
+			g2d.drawString("You bLoGaL!", playAreaWidth / 2, playAreaHeight / 2);
+		}
 	}
 
 	private void update() {
@@ -248,12 +255,17 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		right = false;
 		if(dx != 0 || dy != 0){
 			for(int i = snake.size() - 1; i > 0; i--){
-				snake.get(i).setPosition(snake.get(i - 1).getX(), snake.get(i - 1).getY());
+				(snake.get(i)).setPosition(snake.get(i - 1).getX(), snake.get(i - 1).getY());
 			}
 			head.move(dx, dy);
 		}
-
-
+		for(SnekUnit s : snake){
+			if(s.hitObj(head)){
+				end = true;
+				break;
+			}
+		}
+		
 		if(head.getX() < 0)
 			head.setX(playAreaWidth);
 		if(head.getY() < 0)
@@ -287,8 +299,6 @@ public class DemoSnek extends FlexiblePictureExplorer{
 				else
 					right = true;
 			}
-			else
-				head.move(0, size);
 		}
 		
 		if(randomDirection.isClicked(pix)) {

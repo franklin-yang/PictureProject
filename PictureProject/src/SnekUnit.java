@@ -35,7 +35,7 @@ public class SnekUnit extends BoardPiece{
 	public Rectangle getBound(){
 		return new Rectangle(x, y, size, size);
 	}
-	public boolean isCollision(SnekUnit o){
+	public boolean hitObj(SnekUnit o){
 		if(o == this)
 			return false;
 		return getBound().intersects(o.getBound());
