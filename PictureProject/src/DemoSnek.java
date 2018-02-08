@@ -15,7 +15,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private ArrayList<SnekUnit> snake;
 	private SnekUnit head;
 	private int size = 10;
-	private int length = 5;
+	private int length = 55;
 	private int dx, dy;
 	private int startingSpicySize = 15;
 	private Spicy spicy;
@@ -37,9 +37,9 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private Font fSplash;
 
 	//game options
-	private boolean testing = true;
+	private boolean testing = false;
 	private boolean start = false;
-	private boolean fab = false;
+	private boolean fab = true;
 	private boolean end = false;
 
 	//milliseconds between each movement/screen refresh
