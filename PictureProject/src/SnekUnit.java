@@ -36,9 +36,7 @@ public class SnekUnit extends BoardPiece{
 		return new Rectangle(x, y, size, size);
 	}
 	public boolean hitObj(SnekUnit o){
-		if(o == this)
-			return false;
-		return getBound().intersects(o.getBound());
+		return this.getBound().intersects(o.getBound());
 	}
 	public void render(Graphics2D g2d){
 		g2d.fillRect(x + 1, y + 1, size - 2, size - 2);

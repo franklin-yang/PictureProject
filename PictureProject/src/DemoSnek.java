@@ -15,7 +15,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private ArrayList<SnekUnit> snake;
 	private SnekUnit head;
 	private int size = 10;
-	private int length = 55;
+	private int length = 3;
 	private int dx, dy;
 	private int startingSpicySize = 15;
 	private Spicy spicy;
@@ -37,7 +37,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private Font fSplash;
 
 	//game options
-	private boolean testing = false;
+	private boolean testing = true;
 	private boolean start = false;
 	private boolean fab = true;
 	private boolean end = false;
@@ -107,7 +107,9 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		spicy.setPosition(positionPicker.nextInt(playAreaWidth-spicy.getSize()),positionPicker.nextInt(playAreaHeight-spicy.getSize()));
 //		dy = 0;
 //		right = true;
-		while(true) {
+		end = false;
+		while(!end) {
+			playArea.setAllPixelsToAColor(Color.BLACK);
 			if(spicy.isEaten(head)) {
 				spicy.setPosition(positionPicker.nextInt(playAreaWidth-spicy.getSize()),positionPicker.nextInt(playAreaHeight-spicy.getSize()));
 				snake.add(new SnekUnit(size));
@@ -115,13 +117,16 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			render(g2dView);
 			update();
 			randomDirection.render(g2dView);
+			isGameOver();
+			if(end) {
+				playArea.setAllPixelsToAColor(Color.white);
+			}
 			setImage(playArea);
 			try {
 				Thread.sleep(updateDelay);
 			} catch(Exception e){
 				System.out.println(e);
 			}
-			playArea.setAllPixelsToAColor(Color.BLACK);
 		}
 	}
 
@@ -225,6 +230,14 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			g2d.drawString("You bLoGaL!", playAreaWidth / 2, playAreaHeight / 2);
 		}
 	}
+	
+	private void isGameOver() {
+		for(int s = 1; s < snake.size(); s++){
+			if(snake.get(s).hitObj(head)){
+				end = true;
+			}
+		}
+	}
 
 	private void update() {
 		if(up && dy == 0){
@@ -259,12 +272,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			}
 			head.move(dx, dy);
 		}
-		for(SnekUnit s : snake){
-			if(s.hitObj(head)){
-				end = true;
-				break;
-			}
-		}
+		
 		
 		if(head.getX() < 0)
 			head.setX(playAreaWidth);
@@ -277,14 +285,16 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	}
 
 	public void mouseClickedAction(DigitalPicture pict, Pixel pix){
-		if(!acknowledgeDisc) {
+		if(!acknowledgeDisc && !start) {
 			if(disclaimerBtn.contains(pix.getX(),pix.getY())) {
 				acknowledgeDisc = true;
 				setUpSplash(playAreaWidth,playAreaHeight);
 			}
 		}
+		
 		randomDirection.render(g2dView);
-		if(testing) {
+		
+		if(testing && !end) {
 			int dx = head.getX()-pix.getX();
 			int dy = head.getY()-pix.getY();
 			if(Math.abs(dx)<Math.abs(dy)) {
@@ -301,7 +311,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			}
 		}
 		
-		if(randomDirection.isClicked(pix)) {
+		if(randomDirection.isClicked(pix) && !end) {
 			randomDirection.setRandomLoc(playAreaWidth, playAreaHeight);
 			Random pickDirection = new Random();
 			int rand = pickDirection.nextInt(4);
