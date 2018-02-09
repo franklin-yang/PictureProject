@@ -43,8 +43,8 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private boolean end = false;
 
 	//milliseconds between each movement/screen refresh
-	private int updateDelay = 3;
-	
+	private int updateDelay = 300;
+
 
 	DemoSnek(int w, int h){
 		super(new SimplePicture(w,h,Color.black));
@@ -102,11 +102,11 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	}
 
 	public void letsGo() {
-//		randomDirection.setRandomLoc(playAreaWidth, playAreaHeight);
+		//		randomDirection.setRandomLoc(playAreaWidth, playAreaHeight);
 		Random positionPicker = new Random();
 		spicy.setPosition(positionPicker.nextInt(playAreaWidth-spicy.getSize()),positionPicker.nextInt(playAreaHeight-spicy.getSize()));
-//		dy = 0;
-//		right = true;
+		//		dy = 0;
+		//		right = true;
 		end = false;
 		while(!end) {
 			playArea.setAllPixelsToAColor(Color.BLACK);
@@ -188,10 +188,10 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		}
 
 		class BoardThread extends Thread{
-			
+
 			BoardThread(){
 			}
-			
+
 			public void run() {
 				try{
 					Thread.sleep(3000);
@@ -230,7 +230,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			g2d.drawString("You bLoGaL!", playAreaWidth / 2, playAreaHeight / 2);
 		}
 	}
-	
+
 	private void isGameOver() {
 		for(int s = 1; s < snake.size(); s++){
 			if(snake.get(s).hitObj(head)){
@@ -244,24 +244,24 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			dy = -size;
 			dx = 0;
 		}
-		
+
 		if(down && dy == 0){
 			dy = size;
 			dx = 0;
 		}
-		
+
 		if(left && dx == 0){
 			dy = 0;
 			dx = -size;
 		}
-		
+
 		if(right && dx == 0){
 			dy = 0;
 			dx = size;
 		}
-		
-		
-		
+
+
+
 		up = false;
 		down = false;
 		left = false;
@@ -272,8 +272,8 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			}
 			head.move(dx, dy);
 		}
-		
-		
+
+
 		if(head.getX() < 0)
 			head.setX(playAreaWidth);
 		if(head.getY() < 0)
@@ -291,26 +291,26 @@ public class DemoSnek extends FlexiblePictureExplorer{
 				setUpSplash(playAreaWidth,playAreaHeight);
 			}
 		}
-		
+
 		randomDirection.render(g2dView);
-		
-		if(testing && !end) {
+
+		if(testing && !end && start) {
 			int dx = head.getX()-pix.getX();
 			int dy = head.getY()-pix.getY();
 			if(Math.abs(dx)<Math.abs(dy)) {
-				if(dy>0)
+				if(dy>0 && !down)
 					up = true;
-				else
+				else if(!up)
 					down = true;
 			}
 			else if(Math.abs(dy)<Math.abs(dx)) {
-				if(dx>0)
+				if(dx>0 && !right)
 					left = true;
-				else
+				else if(!left)
 					right = true;
 			}
 		}
-		
+
 		if(randomDirection.isClicked(pix) && !end) {
 			randomDirection.setRandomLoc(playAreaWidth, playAreaHeight);
 			Random pickDirection = new Random();
