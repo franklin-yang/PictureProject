@@ -14,7 +14,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	//objects on board
 	private ArrayList<SnekUnit> snake;
 	private SnekUnit head;
-	private int size = 10;
+	private int size = 5;
 	private int length = 3;
 	private int dx, dy;
 	private int startingSpicySize = 15;
@@ -37,13 +37,18 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private Font fSplash;
 
 	//game options
-	private boolean testing = true;
+	private boolean testing = false;
 	private boolean start = false;
 	private boolean fab = true;
 	private boolean end = false;
-
+	
+	//endscreen
+	private SimplePicture endScreenPic;
+	private Graphics2D endScreenGraphics;
+	
+	
 	//milliseconds between each movement/screen refresh
-	private int updateDelay = 300;
+	private int updateDelay = 30;
 
 
 	DemoSnek(int w, int h){
@@ -64,6 +69,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		}
 		spicy = new Spicy(startingSpicySize);
 		randomDirection = new Button(btnSize);
+		endScreenPic = new SimplePicture(w,h);
 		showWarning();
 
 	}
@@ -209,7 +215,15 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		BoardThread loadBoard = new BoardThread();
 		loadBoard.start();
 	}
-
+	
+	private void makeEndScreen(){
+		endScreenGraphics = endScreenPic.createGraphics();
+		endScreenGraphics.fillRect(0,playAreaHeight/4,playAreaWidth/4,playAreaWidth/4);
+		endScreenGraphics.fillRect(playAreaWidth/4,playAreaHeight/4,playAreaWidth/4,playAreaWidth/4);
+		endScreenGraphics.fillRect(playAreaWidth/2,playAreaHeight/4,playAreaWidth/4,playAreaWidth/4);
+		endScreenGraphics.fillRect((3*playAreaWidth)/4,playAreaHeight/4,playAreaWidth/4,playAreaWidth/4);
+	}
+	
 	public void render(Graphics2D g2d){
 		if(fab == true){
 			for(SnekUnit e : snake)
@@ -336,6 +350,6 @@ public class DemoSnek extends FlexiblePictureExplorer{
 
 
 	public static void main(String[] args){
-		DemoSnek test = new DemoSnek(800,400);
+		DemoSnek test = new DemoSnek(1000,700);
 	}
 }
