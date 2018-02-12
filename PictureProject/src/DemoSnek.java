@@ -27,13 +27,13 @@ public class DemoSnek extends FlexiblePictureExplorer{
 
 	//warning
 	private boolean acknowledgeDisc = false;
-	private Rectangle disclaimerBtn;
+	private Rectangle disclaimerBtn, playButton;
 	private int minDim;
 	private double wiggleMin;
 
 	//splash
-	private SimplePicture splashImg;
-	private Graphics2D gSplash;
+	private SimplePicture splashImg, menuScreen;
+	private Graphics2D gSplash, menuGraphics;
 	private Font fSplash;
 
 	//game options
@@ -43,7 +43,8 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private boolean end = false;
 
 	//milliseconds between each movement/screen refresh
-	private int updateDelay = 300;
+	private int updateDelay = 30;
+	private int splashTime = 3000;
 
 
 	DemoSnek(int w, int h){
@@ -129,7 +130,19 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			}
 		}
 	}
-
+	private void setUpMenu(int width, int height){
+		Picture menuPic = new Picture(height, width);
+		Picture DDN = new Picture("images/de danjr newdl.png");
+		int w = playAreaWidth;
+		int h = playAreaHeight;
+		int btnW = (int)(playAreaWidth*.3);
+		int btnH = (int)(playAreaHeight*.1);
+		menuGraphics = menuPic.createGraphics();
+		menuGraphics.drawImage(DDN.getImage(), 0, 0, w, h, null);
+		playButton = new Rectangle(w/2 - btnW/2, h/2, btnW, btnH);
+		menuGraphics.draw(playButton);
+		setImage(menuPic);
+	}
 	private void setUpSplash(int width, int height) {
 		class SplashThread extends Thread {
 			private int w;
@@ -194,13 +207,14 @@ public class DemoSnek extends FlexiblePictureExplorer{
 
 			public void run() {
 				try{
-					Thread.sleep(3000);
+					Thread.sleep(splashTime);
 					start = true;
 				} catch(Exception e){
 					System.out.println(e);
 				}
 				randomDirection.setRandomLoc(playAreaWidth, playAreaHeight);
-				letsGo();
+				setUpMenu(playAreaWidth, playAreaHeight);
+				//letsGo();
 			}
 		}
 
@@ -336,6 +350,6 @@ public class DemoSnek extends FlexiblePictureExplorer{
 
 
 	public static void main(String[] args){
-		DemoSnek test = new DemoSnek(800,400);
+		DemoSnek test = new DemoSnek(1500, 2);
 	}
 }
