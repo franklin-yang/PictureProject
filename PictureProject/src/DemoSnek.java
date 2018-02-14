@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.Random;
 
@@ -15,7 +16,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private ArrayList<SnekUnit> snake;
 	private SnekUnit head;
 	private int size = 5;
-	private int length = 3;
+	private int length = 300;
 	private int dx, dy;
 	private int startingSpicySize = 15;
 	private Spicy spicy;
@@ -71,7 +72,6 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		randomDirection = new Button(btnSize);
 		endScreenPic = new SimplePicture(w,h);
 		showWarning();
-
 	}
 
 	private void showWarning() {
@@ -106,13 +106,17 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		setImage(warning);
 
 	}
-
+	
+	public void mouseDragged(MouseEvent e)
+	  {
+//	    displayPixelInformation(e);
+	  }
+	  
 	public void letsGo() {
-		//		randomDirection.setRandomLoc(playAreaWidth, playAreaHeight);
 		Random positionPicker = new Random();
 		spicy.setPosition(positionPicker.nextInt(playAreaWidth-spicy.getSize()),positionPicker.nextInt(playAreaHeight-spicy.getSize()));
-		//		dy = 0;
-		//		right = true;
+				dy = 0;
+				left = true;
 		end = false;
 		while(!end) {
 			playArea.setAllPixelsToAColor(Color.BLACK);
@@ -125,9 +129,11 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			randomDirection.render(g2dView);
 			isGameOver();
 			if(end) {
-				playArea.setAllPixelsToAColor(Color.white);
+				setImage(endScreenPic);
 			}
-			setImage(playArea);
+			else{
+				setImage(playArea);
+			}
 			try {
 				Thread.sleep(updateDelay);
 			} catch(Exception e){
@@ -199,6 +205,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			}
 
 			public void run() {
+				makeEndScreen();
 				try{
 					Thread.sleep(3000);
 					start = true;
@@ -218,10 +225,19 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	
 	private void makeEndScreen(){
 		endScreenGraphics = endScreenPic.createGraphics();
-		endScreenGraphics.fillRect(0,playAreaHeight/4,playAreaWidth/4,playAreaWidth/4);
-		endScreenGraphics.fillRect(playAreaWidth/4,playAreaHeight/4,playAreaWidth/4,playAreaWidth/4);
-		endScreenGraphics.fillRect(playAreaWidth/2,playAreaHeight/4,playAreaWidth/4,playAreaWidth/4);
-		endScreenGraphics.fillRect((3*playAreaWidth)/4,playAreaHeight/4,playAreaWidth/4,playAreaWidth/4);
+		endScreenGraphics.setColor(getRandomColor());
+		endScreenGraphics.fillRect(0,(3*playAreaHeight)/4,playAreaWidth/4,playAreaWidth/4);
+		endScreenGraphics.setColor(getRandomColor());
+		endScreenGraphics.fillRect(playAreaWidth/4,(3*playAreaHeight)/4,playAreaWidth/4,playAreaWidth/4);
+		endScreenGraphics.setColor(getRandomColor());
+		endScreenGraphics.fillRect(playAreaWidth/2,(3*playAreaHeight)/4,playAreaWidth/4,playAreaWidth/4);
+		endScreenGraphics.setColor(getRandomColor());
+		endScreenGraphics.fillRect((3*playAreaWidth)/4,(3*playAreaHeight)/4,playAreaWidth/4,playAreaWidth/4);
+	}
+	
+	private Color getRandomColor(){
+		Random getColor = new Random();
+		return new Color(getColor.nextInt(256),getColor.nextInt(256),getColor.nextInt(256));
 	}
 	
 	public void render(Graphics2D g2d){
@@ -306,7 +322,6 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			}
 		}
 
-		randomDirection.render(g2dView);
 
 		if(testing && !end && start) {
 			int dx = head.getX()-pix.getX();
@@ -339,15 +354,10 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			if(rand==3)
 				right = true;
 
+			randomDirection.render(g2dView);
+
 		}
 	}
-
-	public boolean imageUpdate(Image arg0, int arg1, int arg2, int arg3,int arg4, int arg5) {
-		//method from implementing ImageObserver (the input is not needed)
-		return false;
-	}
-
-
 
 	public static void main(String[] args){
 		DemoSnek test = new DemoSnek(1000,700);
