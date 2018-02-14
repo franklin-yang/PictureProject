@@ -4,9 +4,9 @@ import java.awt.Rectangle;
 
 public class SnekUnit extends BoardPiece{
 	private boolean up = false, down = false, left = false, right = false;
-	private int x, y, size;
+	private int x, y, unitSize;
 	SnekUnit(int size){
-		this.size = size;
+		unitSize = size;
 	}
 	public int getX(){
 		return x;
@@ -22,7 +22,7 @@ public class SnekUnit extends BoardPiece{
 	}
 	
 	public void setSize(int sizeToSet) {
-		size = sizeToSet;
+		unitSize = sizeToSet;
 	}
 	public void setPosition(int x, int y){
 		this.x = x;
@@ -33,21 +33,21 @@ public class SnekUnit extends BoardPiece{
 		y += dy;
 	}
 	public Rectangle getBound(){
-		return new Rectangle(x, y, size, size);
+		return new Rectangle(x, y, unitSize, unitSize);
 	}
 	public boolean hitObj(SnekUnit o){
 		return this.getBound().intersects(o.getBound());
 	}
 	public void render(Graphics2D g2d){
-		g2d.fillRect(x + 1, y + 1, size - 2, size - 2);
+		g2d.fillRect(x + 1, y + 1, unitSize - 2, unitSize - 2);
 	}
 	public void renderFab(Graphics2D g2d){
 		int randR, randG, randB;
-		for(int i = 0; i < size; i++){
+		for(int i = 0; i < unitSize; i++){
 			randR = (int) (Math.random() * 255);
 			randG = (int) (Math.random() * 255);
 			randB = (int) (Math.random() * 255);
-			for(int c = 0; c < size; c++){
+			for(int c = 0; c < unitSize; c++){
 				randR = (int) (Math.random() * 255);
 				randG = (int) (Math.random() * 255);
 				randB = (int) (Math.random() * 255);
