@@ -26,7 +26,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private boolean up, down, right, left;
 
 	//warning
-	private boolean acknowledgeDisc = false;
+	private boolean acknowledgeDisc = false, clickPlay = false;
 	private Rectangle disclaimerBtn, playButton;
 	private int minDim;
 	private double wiggleMin;
@@ -131,17 +131,24 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		}
 	}
 	private void setUpMenu(int width, int height){
+		clickPlay = false;
 		Picture menuPic = new Picture(height, width);
 		Picture DDN = new Picture("images/de danjr newdl.png");
+		Font menuFont = new Font("Comics Sans",Font.PLAIN,25);
 		int w = playAreaWidth;
 		int h = playAreaHeight;
 		int btnW = (int)(playAreaWidth*.3);
 		int btnH = (int)(playAreaHeight*.1);
 		menuGraphics = menuPic.createGraphics();
 		menuGraphics.drawImage(DDN.getImage(), 0, 0, w, h, null);
-		playButton = new Rectangle(w/2 - btnW/2, h/2, btnW, btnH);
+		playButton = new Rectangle(4*w/7, 3*h/4, btnW, btnH);
+		FontMetrics metrics = menuGraphics.getFontMetrics(menuFont);
+		int playWidth = metrics.stringWidth("PLAY");
+		menuGraphics.setFont(menuFont);
+		menuGraphics.drawString("PLAY", (4*w/7)+ (btnW/2) - playWidth/2, (3*h/4)+(btnH*3/4));
 		menuGraphics.draw(playButton);
 		setImage(menuPic);
+		
 	}
 	private void setUpSplash(int width, int height) {
 		class SplashThread extends Thread {
@@ -196,7 +203,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 						System.out.println(e);
 					}
 
-				}		
+				}
 			}	
 		}
 
@@ -214,7 +221,13 @@ public class DemoSnek extends FlexiblePictureExplorer{
 				}
 				randomDirection.setRandomLoc(playAreaWidth, playAreaHeight);
 				setUpMenu(playAreaWidth, playAreaHeight);
-				//letsGo();
+				try{
+					Thread.sleep(500);
+				}
+				catch(Exception e){
+					System.out.println(e);
+				}
+				letsGo();
 			}
 		}
 
@@ -305,7 +318,13 @@ public class DemoSnek extends FlexiblePictureExplorer{
 				setUpSplash(playAreaWidth,playAreaHeight);
 			}
 		}
-
+		else if(clickPlay = false){
+			if(playButton.contains(pix.getX(), pix.getY())){
+				System.out.println("14");
+				clickPlay = true;
+				letsGo();
+			}
+		}
 		randomDirection.render(g2dView);
 
 		if(testing && !end && start) {
@@ -350,6 +369,6 @@ public class DemoSnek extends FlexiblePictureExplorer{
 
 
 	public static void main(String[] args){
-		DemoSnek test = new DemoSnek(1500, 2);
+		DemoSnek test = new DemoSnek(800, 400);
 	}
 }
