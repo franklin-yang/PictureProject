@@ -15,8 +15,8 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	//objects on board
 	private ArrayList<SnekUnit> snake;
 	private SnekUnit head;
-	private int size = 5;
-	private int length = 300;
+	private int size = 25;
+	private int length = 3;
 	private int dx, dy;
 	private int startingSpicySize = 15;
 	private Spicy spicy;
@@ -36,20 +36,25 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private SimplePicture splashImg;
 	private Graphics2D gSplash;
 	private Font fSplash;
+	private boolean playedOnce;
 
 	//game options
-	private boolean testing = false;
+	private boolean testing = true;
 	private boolean start = false;
 	private boolean fab = true;
 	private boolean end = false;
+	private boolean ezpz = true;
 	
 	//endscreen
 	private SimplePicture endScreenPic;
 	private Graphics2D endScreenGraphics;
+	private Rectangle returnToMainScreenBtn;
+	private Rectangle customSettingsBtn;
+	private Rectangle playAgainBtn;
 	
 	
 	//milliseconds between each movement/screen refresh
-	private int updateDelay = 30;
+	private int updateDelay = 2;
 
 
 	DemoSnek(int w, int h){
@@ -59,18 +64,8 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		minDim = Math.min(playAreaWidth, playAreaHeight);
 		playArea = new SimplePicture(w,h);
 		g2dView = playArea.createGraphics();
-		snake = new ArrayList<SnekUnit>();
-		head = new SnekUnit(size);
-		head.setPosition(playAreaWidth / 2, playAreaHeight / 2);
-		snake.add(head);
-		for(int i = 1; i < length; i++){
-			SnekUnit e = new SnekUnit(size);
-			e.setPosition(head.getX() + (i * size), head.getY());
-			snake.add(e);
-		}
-		spicy = new Spicy(startingSpicySize);
-		randomDirection = new Button(btnSize);
 		endScreenPic = new SimplePicture(w,h);
+		playedOnce = false;
 		showWarning();
 	}
 
@@ -119,7 +114,10 @@ public class DemoSnek extends FlexiblePictureExplorer{
 				left = true;
 		end = false;
 		while(!end) {
-			playArea.setAllPixelsToAColor(Color.BLACK);
+//			if(fab)
+//				playArea.setAllPixelsToAColor(new Color(255,0,0));
+//			else 
+				playArea.setAllPixelsToAColor(Color.BLACK);
 			if(spicy.isEaten(head)) {
 				spicy.setPosition(positionPicker.nextInt(playAreaWidth-spicy.getSize()),positionPicker.nextInt(playAreaHeight-spicy.getSize()));
 				snake.add(new SnekUnit(size));
@@ -135,7 +133,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 				setImage(playArea);
 			}
 			try {
-				Thread.sleep(updateDelay);
+				Thread.sleep(updateDelay*8);
 			} catch(Exception e){
 				System.out.println(e);
 			}
@@ -205,6 +203,18 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			}
 
 			public void run() {
+				snake = new ArrayList<SnekUnit>();
+				head = new SnekUnit(size);
+				head.setPosition(playAreaWidth / 2, playAreaHeight / 2);
+				snake.add(head);
+				for(int i = 1; i < length; i++){
+					SnekUnit e = new SnekUnit(size);
+					e.setPosition(head.getX() + (i * size), head.getY());
+					snake.add(e);
+				}
+				spicy = new Spicy(startingSpicySize);
+				randomDirection = new Button(btnSize);
+
 				makeEndScreen();
 				try{
 					Thread.sleep(3000);
@@ -216,9 +226,11 @@ public class DemoSnek extends FlexiblePictureExplorer{
 				letsGo();
 			}
 		}
-
-		SplashThread splashIt = new SplashThread(width,height);
-		splashIt.start();
+		
+		if(!playedOnce) {
+			SplashThread splashIt = new SplashThread(width,height);
+			splashIt.start();
+		}
 		BoardThread loadBoard = new BoardThread();
 		loadBoard.start();
 	}
@@ -226,13 +238,13 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private void makeEndScreen(){
 		endScreenGraphics = endScreenPic.createGraphics();
 		endScreenGraphics.setColor(getRandomColor());
-		endScreenGraphics.fillRect(0,(3*playAreaHeight)/4,playAreaWidth/4,playAreaWidth/4);
+		endScreenGraphics.fillRect(0,(3*playAreaHeight)/4,playAreaWidth/3,playAreaWidth/4);
 		endScreenGraphics.setColor(getRandomColor());
-		endScreenGraphics.fillRect(playAreaWidth/4,(3*playAreaHeight)/4,playAreaWidth/4,playAreaWidth/4);
+		endScreenGraphics.fillRect(playAreaWidth/3,(3*playAreaHeight)/4,playAreaWidth/3,playAreaWidth/4);
 		endScreenGraphics.setColor(getRandomColor());
-		endScreenGraphics.fillRect(playAreaWidth/2,(3*playAreaHeight)/4,playAreaWidth/4,playAreaWidth/4);
-		endScreenGraphics.setColor(getRandomColor());
-		endScreenGraphics.fillRect((3*playAreaWidth)/4,(3*playAreaHeight)/4,playAreaWidth/4,playAreaWidth/4);
+		endScreenGraphics.fillRect((2*playAreaWidth)/3,(3*playAreaHeight)/4,playAreaWidth/3,playAreaWidth/4);
+//		endScreenGraphics.setColor(getRandomColor());
+//		endScreenGraphics.fillRect((3*playAreaWidth)/4,(3*playAreaHeight)/4,playAreaWidth/4,playAreaWidth/4);
 	}
 	
 	private Color getRandomColor(){
@@ -315,6 +327,8 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	}
 
 	public void mouseClickedAction(DigitalPicture pict, Pixel pix){
+		
+		
 		if(!acknowledgeDisc && !start) {
 			if(disclaimerBtn.contains(pix.getX(),pix.getY())) {
 				acknowledgeDisc = true;
@@ -340,11 +354,10 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			}
 		}
 
-		if(randomDirection.isClicked(pix) && !end) {
+		if(start && randomDirection.isClicked(pix) && !end) {
 			randomDirection.setRandomLoc(playAreaWidth, playAreaHeight);
 			Random pickDirection = new Random();
 			int rand = pickDirection.nextInt(4);
-			System.out.println(rand);
 			if(rand==0)
 				up = true;
 			if(rand==1)
@@ -353,13 +366,17 @@ public class DemoSnek extends FlexiblePictureExplorer{
 				left = true;
 			if(rand==3)
 				right = true;
-
-			randomDirection.render(g2dView);
+			
+//			if(end && ) {
+//				
+//			}
+			
+//			randomDirection.render(g2dView);
 
 		}
 	}
 
 	public static void main(String[] args){
-		DemoSnek test = new DemoSnek(1000,700);
+		DemoSnek test = new DemoSnek(800,600);
 	}
 }
