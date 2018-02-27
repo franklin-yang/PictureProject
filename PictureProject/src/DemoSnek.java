@@ -133,19 +133,21 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private void setUpMenu(int width, int height){
 		clickPlay = false;
 		Picture menuPic = new Picture(height, width);
-		Picture DDN = new Picture("images/de danjr newdl.png");
+		Picture DDN = new Picture("images/the real instructiosn.png");
 		Font menuFont = new Font("Comics Sans",Font.PLAIN,25);
 		int w = playAreaWidth;
 		int h = playAreaHeight;
-		int btnW = (int)(playAreaWidth*.3);
+		int btnW = (int)(playAreaWidth*.2);
 		int btnH = (int)(playAreaHeight*.1);
 		menuGraphics = menuPic.createGraphics();
 		menuGraphics.drawImage(DDN.getImage(), 0, 0, w, h, null);
-		playButton = new Rectangle(4*w/7, 3*h/4, btnW, btnH);
+		playButton = new Rectangle(5*w/7, 3*h/4, btnW, btnH);
 		FontMetrics metrics = menuGraphics.getFontMetrics(menuFont);
+		menuGraphics.setColor(Color.BLACK);
 		int playWidth = metrics.stringWidth("PLAY");
 		menuGraphics.setFont(menuFont);
-		menuGraphics.drawString("PLAY", (4*w/7)+ (btnW/2) - playWidth/2, (3*h/4)+(btnH*3/4));
+		menuGraphics.drawString("PLAY", (5*w/7)+ (btnW/2) - playWidth/2, (3*h/4)+(btnH*3/4));
+		menuGraphics.setColor(Color.BLACK);
 		menuGraphics.draw(playButton);
 		setImage(menuPic);
 		
@@ -220,7 +222,6 @@ public class DemoSnek extends FlexiblePictureExplorer{
 					System.out.println(e);
 				}
 				randomDirection.setRandomLoc(playAreaWidth, playAreaHeight);
-				setUpMenu(playAreaWidth, playAreaHeight);
 				try{
 					Thread.sleep(500);
 				}
@@ -315,14 +316,15 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		if(!acknowledgeDisc && !start) {
 			if(disclaimerBtn.contains(pix.getX(),pix.getY())) {
 				acknowledgeDisc = true;
-				setUpSplash(playAreaWidth,playAreaHeight);
+				
+				setUpMenu(playAreaWidth, playAreaHeight);
 			}
 		}
-		else if(clickPlay = false){
+		else if(!clickPlay){
 			if(playButton.contains(pix.getX(), pix.getY())){
 				System.out.println("14");
 				clickPlay = true;
-				letsGo();
+				setUpSplash(playAreaWidth,playAreaHeight);
 			}
 		}
 		randomDirection.render(g2dView);
