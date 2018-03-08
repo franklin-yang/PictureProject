@@ -15,7 +15,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private ArrayList<SnekUnit> snake;
 	private SnekUnit head;
 	private int size = 10;
-	private int length = 3;
+	private int length = 70;
 	private int dx, dy;
 	private int startingSpicySize = 15;
 	private Spicy spicy;
@@ -92,10 +92,10 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		int warnWidth = metrics.stringWidth("I understand");
 		int warnHeight = metrics.getAscent();
 		int WARNING = metrics.stringWidth("WARNING");
-		int warnNote = metrics.stringWidth("Game contains flashing lights.");
+		int warnNote = metrics.stringWidth("Game contains rapidly flashing lights.");
 		warnG.setFont(warnFont);
 		warnG.drawString("WARNING", playAreaWidth/2 - WARNING/2, playAreaHeight/3);
-		warnG.drawString("Game contains flashing lights.", playAreaWidth/2 - warnNote/2, playAreaHeight/5*2);
+		warnG.drawString("Game contains rapidly flashing lights.", playAreaWidth/2 - warnNote/2, playAreaHeight/5*2);
 		warnG.setFont(warnFont);
 		warnG.drawString("I understand.", (playAreaWidth/2-warnWidth/2), (int)(playAreaHeight/2.2+btnHeight/2)+(warnHeight/2));
 		setImage(warning);
@@ -106,8 +106,8 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		//		randomDirection.setRandomLoc(playAreaWidth, playAreaHeight);
 		Random positionPicker = new Random();
 		spicy.setPosition(positionPicker.nextInt(playAreaWidth-spicy.getSize()),positionPicker.nextInt(playAreaHeight-spicy.getSize()));
-		//		dy = 0;
-		//		right = true;
+		dy = 0;
+		left = true;
 		end = false;
 		while(!end) {
 			playArea.setAllPixelsToAColor(Color.BLACK);
