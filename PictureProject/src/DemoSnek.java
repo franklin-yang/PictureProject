@@ -28,14 +28,14 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private boolean up, down, right, left;
 
 	//warning
-	private boolean acknowledgeDisc = false;
-	private Rectangle disclaimerBtn;
+	private boolean acknowledgeDisc = false, clickPlay = false;
+	private Rectangle disclaimerBtn, playButton;
 	private int minDim;
 	private double wiggleMin;
 
 	//splash
-	private SimplePicture splashImg;
-	private Graphics2D gSplash;
+	private SimplePicture splashImg, menuScreen;
+	private Graphics2D gSplash, menuGraphics;
 	private Font fSplash;
 	private boolean playedOnce;
 
@@ -67,6 +67,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	
 	//milliseconds between each movement/screen refresh
 	private int updateDelay = 2;
+	private int splashTime = 3000;
 
 
 	DemoSnek(int w, int h){
@@ -104,10 +105,10 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		int warnWidth = metrics.stringWidth("I understand");
 		int warnHeight = metrics.getAscent();
 		int WARNING = metrics.stringWidth("WARNING");
-		int warnNote = metrics.stringWidth("Game contains flashing lights.");
+		int warnNote = metrics.stringWidth("Game contains rapidly flashing lights.");
 		warnG.setFont(warnFont);
 		warnG.drawString("WARNING", playAreaWidth/2 - WARNING/2, playAreaHeight/3);
-		warnG.drawString("Game contains flashing lights.", playAreaWidth/2 - warnNote/2, playAreaHeight/5*2);
+		warnG.drawString("Game contains rapidly flashing lights.", playAreaWidth/2 - warnNote/2, playAreaHeight/5*2);
 		warnG.setFont(warnFont);
 		warnG.drawString("I understand.", (playAreaWidth/2-warnWidth/2), (int)(playAreaHeight/2.2+btnHeight/2)+(warnHeight/2));
 		setImage(warning);
@@ -186,8 +187,8 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	public void letsGo() {
 		Random positionPicker = new Random();
 		spicy.setPosition(positionPicker.nextInt(playAreaWidth-spicy.getSize()),positionPicker.nextInt(playAreaHeight-spicy.getSize()));
-				dy = 0;
-				left = true;
+		dy = 0;
+		left = true;
 		end = false;
 		while(!end) {
 			playArea.setAllPixelsToAColor(Color.BLACK);
@@ -216,6 +217,28 @@ public class DemoSnek extends FlexiblePictureExplorer{
 				System.out.println(e);
 			}
 		}
+	}
+	private void setUpMenu(int width, int height){
+		clickPlay = false;
+		Picture menuPic = new Picture(height, width);
+		Picture DDN = new Picture("images/the real instructiosn.png");
+		Font menuFont = new Font("Comics Sans",Font.PLAIN,25);
+		int w = playAreaWidth;
+		int h = playAreaHeight;
+		int btnW = (int)(playAreaWidth*.2);
+		int btnH = (int)(playAreaHeight*.1);
+		menuGraphics = menuPic.createGraphics();
+		menuGraphics.drawImage(DDN.getImage(), 0, 0, w, h, null);
+		playButton = new Rectangle(5*w/7, 3*h/4, btnW, btnH);
+		FontMetrics metrics = menuGraphics.getFontMetrics(menuFont);
+		menuGraphics.setColor(Color.BLACK);
+		int playWidth = metrics.stringWidth("PLAY");
+		menuGraphics.setFont(menuFont);
+		menuGraphics.drawString("PLAY", (5*w/7)+ (btnW/2) - playWidth/2, (3*h/4)+(btnH*3/4));
+		menuGraphics.setColor(Color.BLACK);
+		menuGraphics.draw(playButton);
+		setImage(menuPic);
+		
 	}
 	private void setUp() {
 		class SplashThread extends Thread {
@@ -270,7 +293,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 						System.out.println(e);
 					}
 
-				}		
+				}
 			}	
 		}
 
@@ -294,12 +317,18 @@ public class DemoSnek extends FlexiblePictureExplorer{
 
 				makeEndScreen();
 				try{
-					Thread.sleep(3000);
+					Thread.sleep(splashTime);
 					start = true;
 				} catch(Exception e){
 					System.out.println(e);
 				}
 				randomDirection.setRandomLoc(playAreaWidth, playAreaHeight);
+				try{
+					Thread.sleep(500);
+				}
+				catch(Exception e){
+					System.out.println(e);
+				}
 				letsGo();
 			}
 		}
@@ -405,10 +434,17 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		if(!acknowledgeDisc && !start) {
 			if(disclaimerBtn.contains(pix.getX(),pix.getY())) {
 				acknowledgeDisc = true;
-				setUp();
+				setUpMenu(playAreaWidth, playAreaHeight);
 			}
 		}
-
+		else if(!clickPlay){
+			if(playButton.contains(pix.getX(), pix.getY())){
+				System.out.println("14");
+				clickPlay = true;
+				setUp(playAreaWidth,playAreaHeight);
+			}
+		}
+		randomDirection.render(g2dView);
 
 		if(testing && !end && start) {
 			int dx = head.getX()-pix.getX();
@@ -454,6 +490,6 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	}
 
 	public static void main(String[] args){
-		DemoSnek test = new DemoSnek(800,500);
+		DemoSnek test = new DemoSnek(800, 400);
 	}
 }
