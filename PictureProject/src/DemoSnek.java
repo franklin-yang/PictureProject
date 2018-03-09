@@ -42,7 +42,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	//game options
 	private boolean testing = false;
 	private boolean start = false;
-	private boolean fab = false;
+	private boolean fab = true;
 	private boolean end = false;
 	private boolean ezpz = true;
 	
@@ -441,10 +441,10 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			if(playButton.contains(pix.getX(), pix.getY())){
 				System.out.println("14");
 				clickPlay = true;
-				setUp(playAreaWidth,playAreaHeight);
+				setUp();
 			}
 		}
-		randomDirection.render(g2dView);
+//		randomDirection.render(g2dView);
 
 		if(testing && !end && start) {
 			int dx = head.getX()-pix.getX();
