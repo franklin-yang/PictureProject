@@ -1,8 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.Random;
@@ -17,7 +15,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private ArrayList<SnekUnit> snake;
 	private SnekUnit head;
 	private int size = 5;
-	private int length = 50;
+	private int length = 500;
 	private int dx, dy;
 	private int startingSpicySize = 15;
 	private Spicy spicy;
@@ -42,9 +40,9 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	//game options
 	private boolean testing = false;
 	private boolean start = false;
-	private boolean fab = false;
+	private boolean fab = true;
 	private boolean end = false;
-	private boolean allowCollisions = true;
+	private boolean allowCollisions = false;
 	private boolean wrapAroundWalls = true;
 	private boolean easierRNG = true;
 
@@ -58,13 +56,6 @@ public class DemoSnek extends FlexiblePictureExplorer{
 
 	//rainbow
 	private int[] baseColor = {255,0,255,5};
-	private int red = baseColor[0];
-	private int green = baseColor[1];
-	private int blue = baseColor[2];
-	private int colorIndex = 5;
-	private int baseColorIndex;
-	private String[] rgbProgression = {"g","r","b","g","r","b"};
-	private String[] baseColorProgression = {"g","r","b","g","r","b"};
 
 
 	//milliseconds between each movement/screen refresh
@@ -346,11 +337,12 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private void makeEndScreen(){
 		endScreenGraphics = endScreenPic.createGraphics();
 		endScreenGraphics.setColor(getRandomColor());
+		playAgainBtn = new Rectangle((2*playAreaWidth)/3,(3*playAreaHeight)/4,playAreaWidth/3,playAreaWidth/4);
 		endScreenGraphics.fillRect(0,(3*playAreaHeight)/4,playAreaWidth/3,playAreaWidth/4);
 		endScreenGraphics.setColor(getRandomColor());
 		endScreenGraphics.fillRect(playAreaWidth/3,(3*playAreaHeight)/4,playAreaWidth/3,playAreaWidth/4);
 		endScreenGraphics.setColor(getRandomColor());
-		endScreenGraphics.fillRect((2*playAreaWidth)/3,(3*playAreaHeight)/4,playAreaWidth/3,playAreaWidth/4);
+		endScreenGraphics.fill(playAgainBtn);
 		//		endScreenGraphics.setColor(getRandomColor());
 		//		endScreenGraphics.fillRect((3*playAreaWidth)/4,(3*playAreaHeight)/4,playAreaWidth/4,playAreaWidth/4);
 	}
@@ -522,7 +514,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 				}
 			}
 		}
-		if(end) {
+		if(end && playAgainBtn.contains(pix.getX(), pix.getY())) {
 			playedOnce = true;
 			setUp();
 			end = false;
