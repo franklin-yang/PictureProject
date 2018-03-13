@@ -15,7 +15,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private ArrayList<SnekUnit> snake;
 	private SnekUnit head;
 	private int size = 5;
-	private int length = 500;
+	private int length = 15;
 	private int dx, dy;
 	private int startingSpicySize = 15;
 	private Spicy spicy;
@@ -40,7 +40,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	//game options
 	private boolean testing = false;
 	private boolean start = false;
-	private boolean fab = true;
+	private boolean fab = false;
 	private boolean end = false;
 	private boolean allowCollisions = false;
 	private boolean wrapAroundWalls = true;
@@ -184,11 +184,13 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		left = true;
 		end = false;
 		while(!end) {
-			playArea.setAllPixelsToAColor(Color.BLACK);
 			if(fab){
 				playArea = drawRainbowBackground();
 				g2dView = playArea.createGraphics();
 				baseColor = getNextColor(baseColor);
+			}
+			else{
+				playArea.setAllPixelsToAColor(Color.BLACK);
 			}
 			if(spicy.isEaten(head)) {
 				spicy.setPosition(positionPicker.nextInt(playAreaWidth-spicy.getSize()),positionPicker.nextInt(playAreaHeight-spicy.getSize()));
