@@ -1,10 +1,13 @@
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.util.Arrays;
 
 public class SnekUnit extends BoardPiece{
 	private boolean up = false, down = false, left = false, right = false;
 	private int x, y, unitSize;
+	private int[] startingRgb = {0,255,0,2};
+
 	SnekUnit(int size){
 		unitSize = size;
 	}
@@ -20,7 +23,7 @@ public class SnekUnit extends BoardPiece{
 	public void setY(int y){
 		this.y = y;
 	}
-	
+
 	public void setSize(int sizeToSet) {
 		unitSize = sizeToSet;
 	}
@@ -42,20 +45,20 @@ public class SnekUnit extends BoardPiece{
 		g2d.fillRect(x + 1, y + 1, unitSize - 2, unitSize - 2);
 	}
 	public void renderFab(Graphics2D g2d){
-		int randR, randG, randB;
+		int[] rgb = Arrays.copyOf(startingRgb,4);
 		for(int i = 0; i < unitSize; i++){
-			randR = (int) (Math.random() * 255);
-			randG = (int) (Math.random() * 255);
-			randB = (int) (Math.random() * 255);
+			int[] innerRgb = Arrays.copyOf(rgb, 4);
 			for(int c = 0; c < unitSize; c++){
-				randR = (int) (Math.random() * 255);
-				randG = (int) (Math.random() * 255);
-				randB = (int) (Math.random() * 255);
-				g2d.setColor(new Color(randR, randG, randB));
+				//				randR = (int) (Math.random() * 255);
+				//				randG = (int) (Math.random() * 255);
+				//				randB = (int) (Math.random() * 255);
+				g2d.setColor(new Color(innerRgb[0], innerRgb[1], innerRgb[2]));
 				g2d.fillRect(x + 1 + i, y + 1 + c, 1, 1);
 			}
+
+			rgb = DemoSnek.getNextColor(rgb);
 		}
-		
+		startingRgb = DemoSnek.getNextColor(startingRgb);
 	}
 }
 
