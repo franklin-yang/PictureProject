@@ -23,7 +23,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private int btnSize = 30;
 
 	//movement
-	private boolean up, down, right, left;
+//	private boolean up, down, right, left;
 
 	//warning
 	private boolean acknowledgeDisc = false, clickPlay = false;
@@ -42,7 +42,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private boolean start = false;
 	private boolean fab = true;
 	private boolean end = false;
-	private boolean allowCollisions = false;
+	private boolean allowCollisions = true;
 	private boolean wrapAroundWalls = true;
 	private boolean easierRNG = true;
 
@@ -55,7 +55,13 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private Picture DDN = new Picture("images/the real instructiosn.png");
 	private Picture death = new Picture("images/ded screen.jpg");
 
-
+	private int[] direction = new int[2];
+	
+	private final int[] up = {0,-size};
+	private final int[] left = {-size,0};
+	private final int[] right = {size,0};
+	private final int[] down = {0,size};	
+	
 	//rainbow
 	private int[] baseColor = {255,0,255,5};
 	Random positionPicker = new Random();
@@ -195,16 +201,15 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			if(spicy.isEaten(s)) {
 				spicy.setPosition(positionPicker.nextInt(playAreaWidth-spicy.getSize()),positionPicker.nextInt(playAreaHeight-spicy.getSize()));
 				snake.add(new SnekUnit(size));
+				break;
 			}
-			break;
 		}
 	}
 	
 	public void gaemOn() {
 		positionPicker = new Random();
 		spicy.setPosition(positionPicker.nextInt(playAreaWidth-spicy.getSize()),positionPicker.nextInt(playAreaHeight-spicy.getSize()));
-		dy = 0;
-		left = true;
+		direction = left;
 		end = false;
 		while(!end) {
 			drawBackdrop();
@@ -392,32 +397,11 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	}
 
 	private void updateSnekPosition() {
-		if(up && dy == 0){
-			dy = -size;
-			dx = 0;
-		}
-
-		if(down && dy == 0){
-			dy = size;
-			dx = 0;
-		}
-
-		if(left && dx == 0){
-			dy = 0;
-			dx = -size;
-		}
-
-		if(right && dx == 0){
-			dy = 0;
-			dx = size;
-		}
-
-		if(dx != 0 || dy != 0){
 			for(int i = snake.size() - 1; i > 0; i--){
 				(snake.get(i)).setPosition(snake.get(i - 1).getX(), snake.get(i - 1).getY());
 			}
-			head.move(dx, dy);
-		}
+			head.move(direction[0], direction[1]);
+//		}
 
 
 		if(wrapAroundWalls){
@@ -430,14 +414,6 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			if(head.getY() > playAreaHeight)
 				head.setY(0);
 		}
-	}
-
-	private void falseAll(boolean except){
-		up = false;
-		down = false;
-		left = false;
-		right = false;
-		except = true;
 	}
 
 	public void mouseClickedAction(DigitalPicture pict, Pixel pix){
@@ -455,22 +431,21 @@ public class DemoSnek extends FlexiblePictureExplorer{
 				setUp();
 			}
 		}
-		//		randomDirection.render(g2dView);
 
 		if(testing && !end && start) {
 			int dx = head.getX()-pix.getX();
 			int dy = head.getY()-pix.getY();
 			if(Math.abs(dx)<Math.abs(dy)) {
-				if(dy>0 && !down)
-					up = true;
-				else if(!up)
-					down = true;
+				if(dy>0 && !direction.equals(down))
+					direction = up;
+				else if(!direction.equals(up))
+					direction = down;
 			}
 			else if(Math.abs(dy)<Math.abs(dx)) {
-				if(dx>0 && !right)
-					left = true;
-				else if(!left)
-					right = true;
+				if(dx>0 && !direction.equals(right))
+					direction = left;
+				else if(!direction.equals(left))
+					direction = right;;
 			}
 		}
 
@@ -480,43 +455,35 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			if(!easierRNG){
 				int rand = pickDirection.nextInt(4);
 				if(rand==0){
-					falseAll(up);
-					up = true;
+					direction = up;
 				}
 				if(rand==1){
-					falseAll(down);
-					down = true;
+					direction = down;
 				}
 				if(rand==2){
-					falseAll(left);
-					left = true;
+					direction = left;
 				}
 				if(rand==3){
-					falseAll(right);
-					right = true;
+					direction = right;
 				}
 			}
 			else{
 				System.out.println("rng");
 				int rand = pickDirection.nextInt(2);
-				if(up || down){
+				if(direction[0]==0){
 					if(rand == 0){
-						falseAll(right);
-						right = true;
+						direction = right;
 					}
 					else{
-						falseAll(left);
-						left = true;
+						direction = left;
 					}
 				}
-				else if(left || right){
+				else if(direction[1]==0){
 					if(rand == 0){
-						falseAll(up);
-						up = true;
+						direction = up;
 					}
 					else{
-						falseAll(down);
-						down = true;
+						direction = down;
 					}
 				}
 			}
