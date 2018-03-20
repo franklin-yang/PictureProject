@@ -81,6 +81,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	private int updateDelay = 2;
 	private int splashTime = 3000;
 	private Font ComicSansMSBold;
+	private Rectangle toggleDifficulty;
 
 	DemoSnek(int w, int h){
 		super(new SimplePicture(w,h,Color.black));
@@ -378,8 +379,11 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		FontMetrics endMetrics = endScreenGraphics.getFontMetrics(btnFont);
 		int plaeAgin = endMetrics.stringWidth("plae agin");
 		int plaeAginHeight= endMetrics.getAscent();
+		int toggleMetrics = endMetrics.stringWidth("tawgel");
+		int ezMetrics = endMetrics.stringWidth("ezpz or n-saen");
 		playAgainBtn = new Rectangle((2*playAreaWidth)/3,(3*playAreaHeight)/4,playAreaWidth/3,playAreaWidth/4);
 		toggleFabBtn = new Rectangle(0,(3*playAreaHeight)/4,playAreaWidth/3,playAreaWidth/4);
+		toggleDifficulty = new Rectangle(playAreaWidth/3,(3*playAreaHeight)/4,playAreaWidth/3,playAreaWidth/4);
 		endScreenGraphics.setColor(getRandomColor());
 		endScreenGraphics.fill(toggleFabBtn);
 		endScreenGraphics.setColor(getRandomColor());
@@ -389,11 +393,10 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		endScreenGraphics.setColor(getRandomColor());
 		endScreenGraphics.setFont(btnFont);
 		endScreenGraphics.drawString("plae agin", ((2*playAreaWidth)/3)+(playAreaWidth/6)-(plaeAgin/2), ((3*playAreaHeight)/4)+(playAreaHeight/8)+(plaeAginHeight/2));
-		System.out.println(((2*playAreaWidth)/3)+(playAreaWidth/6)-(plaeAgin/2)+"wdf");
-		System.out.println(((3*playAreaWidth)/4)+(playAreaWidth/8)-(plaeAginHeight/2));
-
-		//		endScreenGraphics.setColor(getRandomColor());
-		//		endScreenGraphics.fillRect((3*playAreaWidth)/4,(3*playAreaHeight)/4,playAreaWidth/4,playAreaWidth/4);
+		endScreenGraphics.setColor(getRandomColor());
+		endScreenGraphics.drawString("tawgel", (playAreaWidth/6)-(toggleMetrics/2), ((3*playAreaHeight)/4)+(playAreaHeight/8)+(plaeAginHeight/2));
+		endScreenGraphics.setColor(getRandomColor());
+		endScreenGraphics.drawString("ezpz or n-saen", (playAreaWidth/2)-(ezMetrics/2), ((3*playAreaHeight)/4)+(playAreaHeight/8)+(plaeAginHeight/2));
 	}
 
 	private Color getRandomColor(){
@@ -447,7 +450,6 @@ public class DemoSnek extends FlexiblePictureExplorer{
 	}
 
 	public void mouseClickedAction(DigitalPicture pict, Pixel pix){
-		System.out.println(end);
 
 		if(!acknowledgeDisc && !start) {
 			if(disclaimerBtn.contains(pix.getX(),pix.getY())) {
@@ -498,7 +500,6 @@ public class DemoSnek extends FlexiblePictureExplorer{
 				}
 			}
 			else{
-				System.out.println("rng");
 				int rand = pickDirection.nextInt(2);
 				if(direction[0]==0){
 					if(rand == 0){
@@ -527,6 +528,10 @@ public class DemoSnek extends FlexiblePictureExplorer{
 
 		if(end && toggleFabBtn.contains(pix.getX(), pix.getY())) {
 			fab = !fab;
+		}
+		
+		if(end && toggleDifficulty.contains(pix.getX(),pix.getY())){
+			easierRNG = !easierRNG;
 		}
 	}
 
