@@ -373,10 +373,11 @@ public class DemoSnek extends FlexiblePictureExplorer{
 
 
 	private void makeEndScreen(){
-		Font btnFont = new Font("ComicSansMSBold", Font.PLAIN,25);
+		Font btnFont = ComicSansMSBold.deriveFont(Font.PLAIN, 25);
 		endScreenGraphics = endScreenPic.createGraphics();
 		FontMetrics endMetrics = endScreenGraphics.getFontMetrics(btnFont);
 		int plaeAgin = endMetrics.stringWidth("plae agin");
+		int plaeAginHeight= endMetrics.getAscent();
 		playAgainBtn = new Rectangle((2*playAreaWidth)/3,(3*playAreaHeight)/4,playAreaWidth/3,playAreaWidth/4);
 		toggleFabBtn = new Rectangle(0,(3*playAreaHeight)/4,playAreaWidth/3,playAreaWidth/4);
 		endScreenGraphics.setColor(getRandomColor());
@@ -385,6 +386,12 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		endScreenGraphics.fillRect(playAreaWidth/3,(3*playAreaHeight)/4,playAreaWidth/3,playAreaWidth/4);
 		endScreenGraphics.setColor(getRandomColor());
 		endScreenGraphics.fill(playAgainBtn);
+		endScreenGraphics.setColor(getRandomColor());
+		endScreenGraphics.setFont(btnFont);
+		endScreenGraphics.drawString("plae agin", ((2*playAreaWidth)/3)+(playAreaWidth/6)-(plaeAgin/2), ((3*playAreaHeight)/4)+(playAreaHeight/8)+(plaeAginHeight/2));
+		System.out.println(((2*playAreaWidth)/3)+(playAreaWidth/6)-(plaeAgin/2)+"wdf");
+		System.out.println(((3*playAreaWidth)/4)+(playAreaWidth/8)-(plaeAginHeight/2));
+
 		//		endScreenGraphics.setColor(getRandomColor());
 		//		endScreenGraphics.fillRect((3*playAreaWidth)/4,(3*playAreaHeight)/4,playAreaWidth/4,playAreaWidth/4);
 	}
