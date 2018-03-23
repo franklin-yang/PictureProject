@@ -79,7 +79,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 
 
 	//milliseconds between each movement/screen refresh
-	private int updateDelay = 2;
+	private int updateDelay = 20;
 	private int splashTime = 3000;
 	private Font ComicSansMSBold;
 	private Rectangle toggleDifficulty;
@@ -340,14 +340,17 @@ public class DemoSnek extends FlexiblePictureExplorer{
 		spicy.setPosition(positionPicker.nextInt(playAreaWidth-spicy.getSize()),positionPicker.nextInt(playAreaHeight-spicy.getSize()));
 		direction = left;
 		end = false;
+		Random scoreSizePicker = new Random();
+		int scoreSize;
 		while(!end) {
 			drawBackdrop();
 			checkSpicyEaten();
 			updateSnekPosition();
 			render(g2dView);
-			Font font = new Font("Comics Sans",Font.PLAIN,12);
+			scoreSize = scoreSizePicker.nextInt(minDim/10);
+			Font font = new Font("Comics Sans",Font.PLAIN,scoreSize);
 			FontMetrics metrics = menuGraphics.getFontMetrics(font);
-			int stringWid = metrics.stringWidth("Score: 10");
+			int stringWid = metrics.stringWidth("Score: "+score);
 			
 			
 			baseColor = getNextColor(baseColor);
@@ -554,7 +557,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 
 	public void mouseDragged(MouseEvent e)
 	{
-		//	    displayPixelInformation(e);
+		//prevent click-and-drag abuse
 	}
 
 	public static void main(String[] args){
