@@ -74,6 +74,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 
 	//rainbow
 	private int[] baseColor = {255,0,255,5};
+	private int score = 0;
 	Random positionPicker = new Random();
 
 
@@ -344,6 +345,21 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			checkSpicyEaten();
 			updateSnekPosition();
 			render(g2dView);
+			Font font = new Font("Comics Sans",Font.PLAIN,12);
+			FontMetrics metrics = menuGraphics.getFontMetrics(font);
+			int stringWid = metrics.stringWidth("Score: 10");
+			
+			
+			baseColor = getNextColor(baseColor);
+			g2dView.setColor(Color.white);
+			
+			if(direction.equals(up))
+				g2dView.drawString("Score: "+ score, head.getX() - stringWid/2, head.getY()-size/4);
+			else if(direction.equals(down))
+				g2dView.drawString("Score: "+ score, head.getX() - stringWid/2, head.getY()+size*2);
+			else
+				g2dView.drawString("Score: "+ score, head.getX() - stringWid/2, head.getY());
+			
 			checkGameoveConditions();
 			if(end) {
 				setImage(endScreenPic);
@@ -367,6 +383,7 @@ public class DemoSnek extends FlexiblePictureExplorer{
 			if(spicy.isEaten(s)) {
 				spicy.setPosition(positionPicker.nextInt(playAreaWidth-spicy.getSize()),positionPicker.nextInt(playAreaHeight-spicy.getSize()));
 				snake.add(new SnekUnit(size));
+				score++;
 				break;
 			}
 		}
